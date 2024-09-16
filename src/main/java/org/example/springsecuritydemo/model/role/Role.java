@@ -22,9 +22,10 @@ public enum Role {
     /**
      * SimpleGrantedAuthority - определяет, кто и к чему имеет доступ
      * Конвертация ролей в SimpleGrantedAuthority
+     *
      * @return Есть роль, у каждой роли есть Set<Permission>, на их основании получаем GrantedAuthority
      */
-    public Set<SimpleGrantedAuthority> getSimpleGrantedAuthority() {
+    public Set<SimpleGrantedAuthority> getAuthority() {
         return getPermissions().stream()
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
                 .collect(Collectors.toSet());

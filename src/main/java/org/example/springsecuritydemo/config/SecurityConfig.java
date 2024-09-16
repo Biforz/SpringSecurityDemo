@@ -1,5 +1,6 @@
 package org.example.springsecuritydemo.config;
 
+import org.example.springsecuritydemo.model.role.Permission;
 import org.example.springsecuritydemo.model.role.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +27,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
-                                .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
-                                .requestMatchers(HttpMethod.POST, "/api/**").hasRole(Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/developers/**").hasRole(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/api/**").hasAuthority(Permission.DEVELOPERS_READ.getPermission())
+                                .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/developers/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
                                 .requestMatchers(HttpMethod.GET, "/").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults());
@@ -41,12 +42,12 @@ public class SecurityConfig {
                 User.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("admin"))
-                        .roles("ADMIN")
+                        .authorities(Role.ADMIN.getAuthority())
                         .build(),
                 User.builder()
                         .username("user")
                         .password(passwordEncoder.encode("user"))
-                        .roles("USER")
+                        .authorities(Role.USER.getAuthority())
                         .build());
     }
 
