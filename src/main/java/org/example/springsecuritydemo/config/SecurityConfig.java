@@ -1,11 +1,11 @@
 package org.example.springsecuritydemo.config;
 
-import org.example.springsecuritydemo.model.role.Permission;
 import org.example.springsecuritydemo.model.role.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -27,9 +28,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
-                                .requestMatchers(HttpMethod.GET, "/api/**").hasAuthority(Permission.DEVELOPERS_READ.getPermission())
-                                .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/developers/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
+                                // начал использовать аннотацию @PreAuthorize в контроллере и @EnableGlobalMethodSecurity
+                                // В связи с этим убрал эти строки
+//                                .requestMatchers(HttpMethod.GET, "/api/**").hasAuthority(Permission.DEVELOPERS_READ.getPermission())
+//                                .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
+//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/developers/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
                                 .requestMatchers(HttpMethod.GET, "/").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults());
