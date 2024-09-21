@@ -1,4 +1,4 @@
-package org.example.springsecuritydemo.model.role;
+package org.example.springsecuritydemo.model;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
